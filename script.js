@@ -1,4 +1,3 @@
-
 // Footer year
 document.addEventListener('DOMContentLoaded', () => {
   const y = document.getElementById('year');
@@ -91,9 +90,8 @@ if (canvas){
   let pointer = {x:0, y:0, active:false};
   let explodeUntil = 0;
   let lastTap = 0;
-  // Always show company name on desktop + 5s delay on mobile
-let IDLE_DELAY =  1000;
-if (window.innerWidth > 980) IDLE_DELAY = 0; // desktop → immediately form name
+  // Always show company name
+  let IDLE_DELAY = 0; // Immediately form name
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -108,7 +106,7 @@ if (window.innerWidth > 980) IDLE_DELAY = 0; // desktop → immediately form nam
   resize();
 
   function rand(a,b){ return a + Math.random()*(b-a); }
-  for(let i=0;i<N;i++){
+  for(let i=0;i<N;i++){ 
     particles.push({x:rand(0,W), y:rand(0,H), vx:rand(-0.6,0.6), vy:rand(-0.6,0.6), r:rand(1.3,2.5), t: -1});
   }
 
@@ -153,7 +151,7 @@ if (window.innerWidth > 980) IDLE_DELAY = 0; // desktop → immediately form nam
 
   function draw(){
     const now = performance.now();
-   const idle = ((now - lastInteraction) > IDLE_DELAY);
+    const idle = ((now - lastInteraction) > IDLE_DELAY);
     ctx.clearRect(0,0,W,H);
 
     // soft glow
