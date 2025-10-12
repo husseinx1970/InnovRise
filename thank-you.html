@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Thank You — InnovRise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark only" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: radial-gradient(circle at center, #0a0a12 0%, #000 100%);
+      color: #eafaff;
+      font-family: "Inter", sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #55ffe1;
+      text-shadow: 0 0 20px rgba(85, 255, 225, 0.5);
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    a.btn-primary {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: linear-gradient(90deg, #55ffe1, #8da2ff);
+      color: #000;
+      font-weight: 600;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    a.btn-primary:hover {
+      background: linear-gradient(90deg, #8da2ff, #55ffe1);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(85, 255, 225, 0.5);
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="particles">
+    <canvas id="bgGL" aria-hidden="true"></canvas>
+  </div>
+
+  <h1>Thank You</h1>
+  <p>Your message has been received. We’ll get back to you as soon as possible.</p>
+  <a href="index.html" class="btn-primary">Back to Home</a>
+
+  <script>
+    // Simple background glow animation
+    const bg = document.getElementById("bgGL");
+    if (bg) {
+      const gl = bg.getContext("2d");
+      function resizeBG() {
+        bg.width = innerWidth;
+        bg.height = innerHeight;
+      }
+      addEventListener("resize", resizeBG, { passive: true });
+      resizeBG();
+
+      let t = 0;
+      (function loop() {
+        t += 0.008;
+        const g = gl.createRadialGradient(
+          bg.width / 2,
+          bg.height / 2,
+          0,
+          bg.width / 2,
+          bg.height / 2,
+          Math.max(bg.width, bg.height) / 1.5
+        );
+        g.addColorStop(0, `rgba(85,255,225,0.12)`);
+        g.addColorStop(1, `rgba(0,0,0,0.9)`);
+        gl.fillStyle = g;
+        gl.fillRect(0, 0, bg.width, bg.height);
+        requestAnimationFrame(loop);
+      })();
+    }
+  </script>
+</body>
+</html>
