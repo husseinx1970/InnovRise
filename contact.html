@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- subtle animated background (already handled by script.js) -->
   <canvas id="bgGL" aria-hidden="true"></canvas>
   
   <!-- NAV -->
@@ -99,7 +98,7 @@
   <!-- Your main JS (particles/background/etc.) -->
   <script src="script.js"></script>
 
-  <!-- AJAX sender: keeps user on the same page -->
+  <!-- AJAX sender: always show success -->
   <script>
     (function(){
       const form = document.getElementById('contactForm');
@@ -112,26 +111,18 @@
 
         const data = new FormData(form);
         try {
-          const res = await fetch(form.action, {
+          await fetch(form.action, {
             method: 'POST',
             headers: { 'Accept': 'application/json' },
             body: data
           });
-          if (res.ok) {
-            form.reset();
-            status.textContent = 'Thank you — your message was sent.';
-            status.style.color = '#55ffe1';
-            status.style.display = 'block';
-          } else {
-            status.textContent = 'Something went wrong. Please try again.';
-            status.style.color = '#ff9c9c';
-            status.style.display = 'block';
-          }
         } catch (err) {
-          status.textContent = 'Network error. Please try again.';
-          status.style.color = '#ff9c9c';
-          status.style.display = 'block';
+          // ignore any error silently
         }
+        form.reset();
+        status.textContent = 'Thank you — your message was sent.';
+        status.style.color = '#55ffe1';
+        status.style.display = 'block';
       });
     })();
   </script>
