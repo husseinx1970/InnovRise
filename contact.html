@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact — InnovRise</title>
+  <meta name="description" content="Contact InnovRise for collaboration, partnerships, and investment." />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div id="mouse-glow" aria-hidden="true"></div>
+  
+<header class="nav">
+  <a class="logo" href="index.html">
+    <img src="assets/logo.svg" alt="InnovRise logo" />
+    <span>InnovRise</span>
+  </a>
+  <nav>
+    <input id="nav-toggle" type="checkbox" aria-label="Toggle navigation"/>
+    <label for="nav-toggle" class="hamburger" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="btn-primary" href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+  <main class="page narrow">
+    <h1>Contact InnovRise</h1>
+    <p class="lead">Collaborate, invest, or say hello. We’ll get back to you shortly.</p>
+    <form class="contact-form" action="mailto:contact@innovrise.com" method="post" enctype="text/plain">
+      <label>Name
+        <input type="text" name="name" placeholder="Your full name" required />
+      </label>
+      <label>Email
+        <input type="email" name="email" placeholder="your@email.com" required />
+      </label>
+      <label>Message
+        <textarea name="message" rows="6" placeholder="Tell us about your idea or request…" required></textarea>
+      </label>
+      <button class="btn-primary pulse" type="submit">Send Message</button>
+    </form>
+    <div class="contact-meta">
+      <p><strong>Location:</strong> Karlstad, Sweden</p>
+      <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">InnovRise</a></p>
+    </div>
+  </main>
+  
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="InnovRise logo small" />
+      <div>
+        <strong>InnovRise</strong>
+        <p>Swedish Future Innovation</p>
+      </div>
+    </div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <div class="legal">© <span id="year"></span> InnovRise AB — Karlstad, Sweden</div>
+</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

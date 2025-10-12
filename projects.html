@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects — InnovRise</title>
+  <meta name="description" content="InnovRise projects: SafeSpeed BlackBox, ArchiPrint AI 3D, NeuroWake, Jaffar AI Robot, BlackBox+ Cloud Hub." />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div id="mouse-glow" aria-hidden="true"></div>
+  
+<header class="nav">
+  <a class="logo" href="index.html">
+    <img src="assets/logo.svg" alt="InnovRise logo" />
+    <span>InnovRise</span>
+  </a>
+  <nav>
+    <input id="nav-toggle" type="checkbox" aria-label="Toggle navigation"/>
+    <label for="nav-toggle" class="hamburger" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="btn-primary" href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+  <main class="page">
+    <h1>Projects</h1>
+    <p class="lead">A curated portfolio of current and upcoming innovations. We focus on problems with clear human impact — and solve them with elegant engineering.</p>
+
+    <section id="safespeed" class="project glass neon-border tilt">
+      <h2>Project 001 — SafeSpeed BlackBox</h2>
+      <p><strong>Problem:</strong> Road accidents, overspeeding, and fatigue are responsible for thousands of avoidable incidents. Insurers lack trusted, objective evidence.</p>
+      <p><strong>Solution:</strong> An AI‑enabled black‑box device for any car that detects overspeeding and driver drowsiness, records encrypted telemetry, and securely shares event summaries with insurance partners.</p>
+      <ul class="tags"><li>Safety</li><li>Telematics</li><li>InsurTech</li></ul>
+    </section>
+
+    <section id="archiprint" class="project glass neon-border tilt">
+      <h2>Project 002 — ArchiPrint AI 3D</h2>
+      <p><strong>Problem:</strong> Architectural models are time‑consuming, expensive, and difficult to iterate quickly.</p>
+      <p><strong>Solution:</strong> An AI‑assisted 3D printing workflow that turns sketches and early CAD concepts into optimized printed models — accelerating reviews and reducing cost.</p>
+      <ul class="tags"><li>DesignTech</li><li>3D Printing</li><li>Architecture</li></ul>
+    </section>
+
+    <section id="neurowake" class="project glass neon-border tilt">
+      <h2>Project 003 — NeuroWake Driver Guard</h2>
+      <p><strong>Problem:</strong> Drowsy driving silently causes millions of risky micro‑events before an accident happens.</p>
+      <p><strong>Solution:</strong> A neuro‑audio wearable with ear‑based sensing that detects pre‑sleep patterns and delivers gentle stimuli to keep drivers alert — before danger escalates.</p>
+      <ul class="tags"><li>NeuroTech</li><li>Wearables</li><li>Safety</li></ul>
+    </section>
+
+    <section id="jaffar" class="project glass neon-border tilt">
+      <h2>Project 004 — Jaffar♾️ AI Robot</h2>
+      <p><strong>Problem:</strong> Inspection and exploration in complex environments (industrial sites, tight spaces, vertical structures) is dangerous and costly.</p>
+      <p><strong>Solution:</strong> A compact hybrid robot capable of flight and wall‑climbing, with AI vision for mapping, detection, and remote operations.</p>
+      <ul class="tags"><li>Robotics</li><li>AI Vision</li><li>Inspection</li></ul>
+    </section>
+
+    <section id="cloudhub" class="project glass neon-border tilt">
+      <h2>Project 005 — BlackBox+ Cloud Hub</h2>
+      <p><strong>Problem:</strong> Cities and insurers lack real‑world data to improve safety and policy.</p>
+      <p><strong>Solution:</strong> A privacy‑preserving cloud for aggregated road statistics from InnovRise devices — enabling smarter planning and fairer insurance.</p>
+      <ul class="tags"><li>Cloud</li><li>Privacy</li><li>Analytics</li></ul>
+    </section>
+
+    <section class="section callout slim">
+      <div class="callout-inner glass neon-border">
+        <h2>Looking for strategic partners & investment</h2>
+        <p>We’re open to collaboration, licensing, and seed investment to accelerate development. Let’s align on market entry and pilots.</p>
+        <div class="cta">
+          <a class="btn-primary" href="contact.html">Contact Us</a>
+          <a class="btn-ghost" href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="InnovRise logo small" />
+      <div>
+        <strong>InnovRise</strong>
+        <p>Swedish Future Innovation</p>
+      </div>
+    </div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <div class="legal">© <span id="year"></span> InnovRise AB — Karlstad, Sweden</div>
+</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
