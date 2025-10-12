@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Projects — InnovRise</title>
+  <meta name="description" content="InnovRise projects: SafeSpeed BlackBox, ArchiPrint AI 3D, NeuroWake, Jaffar AI Robot, BlackBox+ Cloud Hub." />
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b0f16"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+  <canvas id="playground" aria-hidden="true"></canvas>
+  
+<header class="nav container" role="banner">
+  <a class="logo" href="index.html" aria-label="InnovRise Home">
+    <img src="assets/logo.svg" alt="InnovRise logo" />
+    <span>InnovRise</span>
+  </a>
+  <nav class="navwrap" role="navigation" aria-label="Primary">
+    <input id="nav-toggle" type="checkbox" aria-label="Toggle navigation"/>
+    <label for="nav-toggle" class="hamburger" aria-hidden="true" aria-label="Open menu" title="Menu">
+      <span></span><span></span><span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="btn-primary" href="contact.html"><span>Contact</span></a></li>
+    </ul>
+    <div class="backdrop" aria-hidden="true"></div>
+  </nav>
+</header>
+
+  <main class="container page">
+    <h1 class="reveal">Projects</h1>
+    <p class="lead reveal">We focus on problems with clear human impact and solve them with elegant engineering.</p>
+
+    <section id="safespeed" class="project card glass elevate reveal">
+      <h2><span class="num">Project&nbsp;001</span> — SafeSpeed BlackBox</h2>
+      <p><strong>Problem:</strong> Overspeeding and fatigue drive avoidable incidents while insurers lack trusted, objective evidence.</p>
+      <p><strong>Solution:</strong> A plug-and-drive AI black-box that detects overspeed & drowsiness and emits encrypted event summaries — not raw video — to protect privacy while proving the claim.</p>
+      <ul class="grid-spec">
+        <li><strong>Why now</strong> Cheaper sensors + mature edge AI enable mass deployment.</li>
+        <li><strong>Buyer</strong> Fleets & insurers who pay for reduced loss ratio.</li>
+        <li><strong>Moat</strong> On-device analytics + cryptographic attestation workflow.</li>
+      </ul>
+    </section>
+
+    <section id="archiprint" class="project card glass elevate reveal">
+      <h2><span class="num">Project&nbsp;002</span> — ArchiPrint AI 3D</h2>
+      <p><strong>Problem:</strong> Architectural models are slow and expensive to iterate.</p>
+      <p><strong>Solution:</strong> An AI-assisted workflow that turns sketches and early CAD into optimized physical concepts — compressing review cycles from days to hours.</p>
+      <ul class="grid-spec">
+        <li><strong>Who benefits</strong> Architects, developers, and city planners.</li>
+        <li><strong>Business model</strong> SaaS + materials margin.</li>
+        <li><strong>Edge</strong> Print-aware geometry optimization with cost/time estimates.</li>
+      </ul>
+    </section>
+
+    <section id="neurowake" class="project card glass elevate reveal">
+      <h2><span class="num">Project&nbsp;003</span> — NeuroWake Driver Guard</h2>
+      <p><strong>Problem:</strong> Drowsy driving causes micro-events before disaster.</p>
+      <p><strong>Solution:</strong> Ear-sensing neuro-audio wearable that detects pre-sleep patterns and applies gentle stimuli to maintain alertness — without invasive biometrics.</p>
+      <ul class="grid-spec">
+        <li><strong>Partner fit</strong> Fleets, logistics, and professional drivers.</li>
+        <li><strong>Regulatory</strong> Designed for CE marking; data-minimal by design.</li>
+        <li><strong>Moat</strong> Signal processing + adaptive stimulation models.</li>
+      </ul>
+    </section>
+
+    <section id="jaffar" class="project card glass elevate reveal">
+      <h2><span class="num">Project&nbsp;004</span> — Jaffar♾️ AI Robot</h2>
+      <p><strong>Problem:</strong> Inspecting complex environments is dangerous and costly.</p>
+      <p><strong>Solution:</strong> Compact hybrid robot that can fly and climb, with AI vision for mapping, detection, and remote operations in GNSS-denied spaces.</p>
+      <ul class="grid-spec">
+        <li><strong>Use cases</strong> Critical infrastructure, tunnels, high-rises.</li>
+        <li><strong>Revenue</strong> Hardware + service contracts.</li>
+        <li><strong>Moat</strong> Hybrid locomotion + modular sensing.</li>
+      </ul>
+    </section>
+
+    <section id="cloudhub" class="project card glass elevate reveal">
+      <h2><span class="num">Project&nbsp;005</span> — BlackBox+ Cloud Hub</h2>
+      <p><strong>Problem:</strong> Cities and insurers lack real-world data for safety policy.</p>
+      <p><strong>Solution:</strong> Privacy-preserving analytics cloud aggregating InnovRise device stats — enabling smarter planning and fairer insurance without tracking individuals.</p>
+      <ul class="grid-spec">
+        <li><strong>Model</strong> Events-as-a-Service API.</li>
+        <li><strong>Security</strong> End-to-end encryption; zero-knowledge proofs on roadmap.</li>
+        <li><strong>Scaling</strong> Multi-tenant, region-aware data residency.</li>
+      </ul>
+    </section>
+
+    <section class="section callout card glass elevate reveal">
+      <h2>We’re raising pre-seed</h2>
+      <p>Use of funds: hardware certification, manufacturing tooling, and 3 paid pilots across EU. Target milestones: device CE, 1,000 units shipped, 3 insurers integrated.</p>
+      <div class="cta">
+        <a class="btn-primary magnetic" href="contact.html"><span>Contact Us</span></a>
+        <a class="btn-ghost magnetic" href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener"><span>LinkedIn</span></a>
+      </div>
+    </section>
+  </main>
+  
+<footer class="footer" role="contentinfo">
+  <div class="container footer-grid">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="InnovRise logo small" />
+      <div>
+        <strong>InnovRise</strong>
+        <p>Swedish Future Innovation</p>
+      </div>
+    </div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <div class="legal">
+    <span class="engine">⚡ Powered by <strong>InnovRise Quantum Engine</strong></span>
+    <span>© <span id="year"></span> InnovRise AB — Karlstad, Sweden</span>
+  </div>
+</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
