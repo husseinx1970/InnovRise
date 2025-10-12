@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>InnovRise — Human-Centered AI Innovations</title>
+  <meta name="description" content="InnovRise builds human-centered AI innovations for safety, design, and mobility. Built in Sweden, made for the world." />
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+  <canvas id="bgGL" aria-hidden="true"></canvas>
+  <div id="bgFallback" class="bg" aria-hidden="true">
+    <canvas id="grain"></canvas>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+    <div class="gridlines"></div>
+  </div>
+  
+<header class="nav container">
+  <a class="logo" href="index.html" aria-label="InnovRise Home">
+    <img src="assets/logo.svg" alt="InnovRise logo" />
+    <span>InnovRise</span>
+  </a>
+  <nav class="navwrap">
+    <input id="nav-toggle" type="checkbox" aria-label="Toggle navigation"/>
+    <label for="nav-toggle" class="hamburger" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="btn-primary magnetic" href="contact.html"><span>Contact</span></a></li>
+    </ul>
+    <div class="backdrop"></div>
+  </nav>
+</header>
+
+  <main class="hero container">
+    <section class="hero-copy reveal">
+      <h1><span class="accent">InnovRise</span> — building elegant, human-centered innovations for a safer, smarter world.</h1>
+      <p class="lead">We turn frontier research into everyday products. Focus: road safety, architect-first 3D, and humane AI that protects privacy and dignity.</p>
+      <ul class="trust-points">
+        <li><strong>Why now:</strong> sensors are cheap, AI is mature, and users demand transparency.</li>
+        <li><strong>Go-to-market:</strong> pilot with insurers & municipalities — monetize verified events, not raw data.</li>
+        <li><strong>Edge privacy:</strong> encryption and on-device processing by default.</li>
+      </ul>
+      <div class="cta">
+        <a class="btn-primary magnetic" href="projects.html"><span>Explore Projects</span></a>
+        <a class="btn-ghost magnetic" href="about.html"><span>About Us</span></a>
+      </div>
+      <ul class="pills" role="list">
+        <li>Ethical AI</li>
+        <li>Privacy-by-Design</li>
+        <li>Real-world Pilots</li>
+      </ul>
+    </section>
+
+    <section class="hero-visual reveal">
+      <canvas id="flowgame" width="640" height="640" aria-label="Interactive neon flow field"></canvas>
+      <p class="play-hint">Drag to bend the field • Double‑tap/click to pulse</p>
+    </section>
+  </main>
+
+  <section class="container kpis section reveal">
+    <div class="kpi"><span data-kpi="3">0</span><small>Pilots this year</small></div>
+    <div class="kpi"><span data-kpi="1000">0</span><small>Target units</small></div>
+    <div class="kpi"><span data-kpi="25">0</span><small>Incidents avoided (sim)</small></div>
+  </section>
+
+  <section class="container section for-investors reveal">
+    <h2>For Investors</h2>
+    <div class="grid-2">
+      <div class="card glass">
+        <h3>Thesis</h3>
+        <p>Prevent danger before it happens. We ship AI that delivers measurable safety and cost reductions — without harvesting personal data.</p>
+        <ul class="bullets">
+          <li><strong>TAM:</strong> global auto insurance & city safety infrastructure.</li>
+          <li><strong>Beachhead:</strong> fleets & taxi co-ops with high incident costs.</li>
+          <li><strong>Business model:</strong> device margin + <em>Events-as-a-Service</em> subscription.</li>
+        </ul>
+      </div>
+      <div class="card glass">
+        <h3>Traction & Plan</h3>
+        <ul class="bullets">
+          <li>Pilot MoUs in progress (fleets/insurers) — references available under NDA.</li>
+          <li>Hardware prototypes validated on-road; architecture supports over-the-air updates.</li>
+          <li>Next 12 months: 3 paid pilots → 1,000 units → EU expansion with channel partners.</li>
+        </ul>
+        <p><strong>Raising:</strong> pre-seed to complete certification, pilots, and manufacturing tooling.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="section-head reveal">
+      <h2>Flagship Innovations</h2>
+      <p class="muted">A glimpse into what we’re building — with partners, for people.</p>
+    </div>
+    <div class="project-tiles">
+      <a class="tile glass elevate reveal" href="projects.html#safespeed">
+        <h4>SafeSpeed BlackBox</h4>
+        <p>AI black box for any car. Overspeed & fatigue detection with trusted evidence.</p>
+      </a>
+      <a class="tile glass elevate reveal" href="projects.html#archiprint">
+        <h4>ArchiPrint AI 3D</h4>
+        <p>Architect-ready 3D pipeline that turns sketches into optimized prints.</p>
+      </a>
+      <a class="tile glass elevate reveal" href="projects.html#neurowake">
+        <h4>NeuroWake Driver Guard</h4>
+        <p>Neuro-audio wearable sensing drowsiness before it becomes danger.</p>
+      </a>
+    </div>
+    <div class="cta center below-tiles">
+      <a class="btn-primary magnetic" href="projects.html"><span>See all projects</span></a>
+    </div>
+  </section>
+
+  <section class="container section callout glass reveal">
+    <div class="callout-inner">
+      <h2>Collaborate or Invest</h2>
+      <p>We’re opening select pilots and looking for strategic partners. Let’s align on market entry and measurable outcomes.</p>
+      <div class="cta">
+        <a class="btn-primary magnetic" href="contact.html"><span>Get in touch</span></a>
+        <a class="btn-ghost magnetic" href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener"><span>Connect on LinkedIn</span></a>
+      </div>
+    </div>
+  </section>
+
+  
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="InnovRise logo small" />
+      <div>
+        <strong>InnovRise</strong>
+        <p>Swedish Future Innovation</p>
+      </div>
+    </div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <div class="legal">© <span id="year"></span> InnovRise AB — Karlstad, Sweden</div>
+</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
