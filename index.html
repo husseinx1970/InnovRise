@@ -1,163 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>InnovRise — Quantum Edition</title>
-  <meta name="description" content="InnovRise builds human-centered AI innovations. Quantum Edition — immersive, investor-ready showcase." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InnovRise Neural Web Universe</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #0b0f16;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#0b0f16"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  canvas {
+    background: radial-gradient(circle at center, #0b0f16 0%, #030508 100%);
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(85, 255, 225, 0.1);
+  }
 
+  #container {
+    width: 95%;
+    max-width: 800px;
+    aspect-ratio: 16/9;
+    position: relative;
+  }
+</style>
 </head>
 <body>
-  <!-- Preloader -->
-  <div id="preloader" aria-hidden="true">
-    <img class="prelogo" src="assets/logo.svg" alt="InnovRise"/>
-    <div class="ring"></div>
-    <p class="pretext">Initializing Quantum Engine…</p>
+  <div id="container">
+    <canvas id="neural"></canvas>
   </div>
 
-  <!-- Background playground -->
-  <canvas id="playground" aria-hidden="true"></canvas>
+<script>
+const canvas = document.getElementById("neural");
+const ctx = canvas.getContext("2d");
+let w, h;
+function resize() {
+  w = canvas.width = canvas.offsetWidth;
+  h = canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
-  
-<header class="nav container" role="banner">
-  <a class="logo" href="index.html" aria-label="InnovRise Home">
-    <img src="assets/logo.svg" alt="InnovRise logo" />
-    <span>InnovRise</span>
-  </a>
-  <nav class="navwrap" role="navigation" aria-label="Primary">
-    <input id="nav-toggle" type="checkbox" aria-label="Toggle navigation"/>
-    <label for="nav-toggle" class="hamburger" aria-hidden="true" aria-label="Open menu" title="Menu">
-      <span></span><span></span><span></span>
-    </label>
-    <ul class="nav-links">
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a class="btn-primary" href="contact.html"><span>Contact</span></a></li>
-    </ul>
-    <div class="backdrop" aria-hidden="true"></div>
-  </nav>
-</header>
+// particle setup
+const NUM = 180;
+const particles = [];
+const links = [];
+const colors = ["#55FFE1", "#8DA2FF", "#66CCFF"];
+let mouse = { x: null, y: null, down: false, dbl: false };
+let idleTime = 0;
+let state = "free"; // free, logo, explode
 
+canvas.addEventListener("pointermove", e => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+canvas.addEventListener("pointerdown", e => {
+  mouse.down = true;
+  idleTime = 0;
+});
+canvas.addEventListener("pointerup", e => {
+  mouse.down = false;
+});
+canvas.addEventListener("dblclick", e => {
+  state = "explode";
+  idleTime = 0;
+});
 
-  <main class="hero container">
-    <section class="hero-copy reveal">
-      <h1 class="holo"><span class="accent">InnovRise</span><br/>building elegant, human-centered innovations.</h1>
-      <p class="lead">We transform frontier research into everyday safety and design products. Built in Sweden, made for the world.</p>
-      <ul class="trust-points">
-        <li><strong>Why now:</strong> sensors are cheap, AI is mature, and users demand transparency.</li>
-        <li><strong>Go-to-market:</strong> pilot with insurers & municipalities — monetize verified events, not raw data.</li>
-        <li><strong>Edge privacy:</strong> encryption and on-device processing by default.</li>
-      </ul>
-      <div class="cta">
-        <a class="btn-primary magnetic" href="projects.html"><span>Explore Projects</span></a>
-        <a class="btn-ghost magnetic" href="about.html"><span>About Us</span></a>
-      </div>
-      <ul class="pills" role="list">
-        <li>Ethical AI</li>
-        <li>Privacy-by-Design</li>
-        <li>Real-world Pilots</li>
-      </ul>
-    </section>
-  </main>
+class Particle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.ox = x;
+    this.oy = y;
+    this.vx = Math.random() * 2 - 1;
+    this.vy = Math.random() * 2 - 1;
+    this.size = 1.8 + Math.random();
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+  }
 
-  <section class="container kpis section reveal">
-    <div class="kpi"><span data-kpi="3">0</span><small>Pilots this year</small></div>
-    <div class="kpi"><span data-kpi="1000">0</span><small>Target units</small></div>
-    <div class="kpi"><span data-kpi="25">0</span><small>Incidents avoided (sim)</small></div>
-  </section>
+  move() {
+    if (state === "explode") {
+      this.vx += (Math.random() - 0.5) * 10;
+      this.vy += (Math.random() - 0.5) * 10;
+    } else if (state === "logo") {
+      // attract to origin points of logo shape
+      this.x += (this.tx - this.x) * 0.1;
+      this.y += (this.ty - this.y) * 0.1;
+    } else {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > w) this.vx *= -1;
+      if (this.y < 0 || this.y > h) this.vy *= -1;
+      if (mouse.x && mouse.down) {
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80) {
+          this.vx += dx / 100;
+          this.vy += dy / 100;
+        }
+      }
+    }
+    this.vx *= 0.95;
+    this.vy *= 0.95;
+  }
 
-  <section class="container section for-investors reveal">
-    <h2>For Investors</h2>
-    <div class="grid-2">
-      <div class="card glass">
-        <h3>Thesis</h3>
-        <p>Prevent danger before it happens. We ship AI that delivers measurable safety and cost reductions — without harvesting personal data.</p>
-        <ul class="bullets">
-          <li><strong>TAM:</strong> global auto insurance & city safety infrastructure.</li>
-          <li><strong>Beachhead:</strong> fleets & taxi co-ops with high incident costs.</li>
-          <li><strong>Business model:</strong> device margin + <em>Events-as-a-Service</em> subscription.</li>
-        </ul>
-      </div>
-      <div class="card glass">
-        <h3>Traction & Plan</h3>
-        <ul class="bullets">
-          <li>Pilot MoUs in progress (fleets/insurers) — references available under NDA.</li>
-          <li>Hardware prototypes validated on-road; architecture supports OTA updates.</li>
-          <li>Next 12 months: 3 paid pilots → 1,000 units → EU expansion with partners.</li>
-        </ul>
-        <p><strong>Raising:</strong> pre-seed to complete certification, pilots, and manufacturing tooling.</p>
-      </div>
-    </div>
-  </section>
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
 
-  <section class="container section">
-    <div class="section-head reveal">
-      <h2>Flagship Innovations</h2>
-      <p class="muted">A glimpse into what we’re building — with partners, for people.</p>
-    </div>
-    <div class="project-tiles">
-      <a class="tile glass elevate reveal" href="projects.html#safespeed">
-        <h4>SafeSpeed BlackBox</h4>
-        <p>AI black box for any car. Overspeed & fatigue detection with trusted evidence.</p>
-      </a>
-      <a class="tile glass elevate reveal" href="projects.html#archiprint">
-        <h4>ArchiPrint AI 3D</h4>
-        <p>Architect-ready 3D pipeline that turns sketches into optimized prints.</p>
-      </a>
-      <a class="tile glass elevate reveal" href="projects.html#neurowake">
-        <h4>NeuroWake Driver Guard</h4>
-        <p>Neuro-audio wearable sensing drowsiness before it becomes danger.</p>
-      </a>
-    </div>
-    <div class="cta center below-tiles">
-      <a class="btn-primary magnetic" href="projects.html"><span>See all projects</span></a>
-    </div>
-  </section>
+function createParticles() {
+  particles.length = 0;
+  for (let i = 0; i < NUM; i++) {
+    particles.push(new Particle(Math.random() * w, Math.random() * h));
+  }
+}
+createParticles();
 
-  <section class="container section callout glass reveal">
-    <div class="callout-inner">
-      <h2>Collaborate or Invest</h2>
-      <p>We’re opening select pilots and looking for strategic partners. Let’s align on market entry and measurable outcomes.</p>
-      <div class="cta">
-        <a class="btn-primary magnetic" href="contact.html"><span>Get in touch</span></a>
-        <a class="btn-ghost magnetic" href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener"><span>Connect on LinkedIn</span></a>
-      </div>
-    </div>
-  </section>
+// draw logo points
+let logoPoints = [];
+function createLogoPoints() {
+  const off = document.createElement("canvas");
+  off.width = 400;
+  off.height = 100;
+  const offctx = off.getContext("2d");
+  offctx.fillStyle = "#fff";
+  offctx.font = "bold 70px Arial";
+  offctx.fillText("INNOVRISE", 10, 70);
+  const img = offctx.getImageData(0, 0, 400, 100);
+  const pts = [];
+  for (let y = 0; y < img.height; y += 4) {
+    for (let x = 0; x < img.width; x += 4) {
+      const idx = (y * img.width + x) * 4;
+      if (img.data[idx + 3] > 128) {
+        pts.push({ x: x + w / 2 - 200, y: y + h / 2 - 50 });
+      }
+    }
+  }
+  logoPoints = pts;
+  // assign some random particles to logo positions
+  particles.forEach((p, i) => {
+    const t = logoPoints[i % logoPoints.length];
+    p.tx = t.x;
+    p.ty = t.y;
+  });
+}
+createLogoPoints();
 
-  
-<footer class="footer" role="contentinfo">
-  <div class="container footer-grid">
-    <div class="brand">
-      <img src="assets/logo.svg" alt="InnovRise logo small" />
-      <div>
-        <strong>InnovRise</strong>
-        <p>Swedish Future Innovation</p>
-      </div>
-    </div>
-    <div class="links">
-      <a href="index.html">Home</a>
-      <a href="projects.html">Projects</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </div>
-    <div class="socials">
-      <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
-  </div>
-  <div class="legal">
-    <span class="engine">⚡ Powered by <strong>InnovRise Quantum Engine</strong></span>
-    <span>© <span id="year"></span> InnovRise AB — Karlstad, Sweden</span>
-  </div>
-</footer>
+function drawLinks() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const a = particles[i];
+      const b = particles[j];
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 90) {
+        ctx.strokeStyle = a.color + "20";
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    }
+  }
+}
 
-  <script src="script.js"></script>
+function loop() {
+  ctx.clearRect(0, 0, w, h);
+  idleTime += 0.016;
+  if (state === "explode") {
+    if (idleTime > 1) {
+      state = "free";
+      idleTime = 0;
+    }
+  } else if (state === "free" && idleTime > 3) {
+    state = "logo";
+    idleTime = 0;
+  } else if (state === "logo" && idleTime > 10) {
+    state = "free";
+    idleTime = 0;
+  }
+
+  for (let p of particles) {
+    p.move();
+  }
+  drawLinks();
+  for (let p of particles) p.draw();
+
+  if (state === "explode") {
+    ctx.strokeStyle = "rgba(85,255,225,0.2)";
+    ctx.lineWidth = 5;
+    ctx.strokeRect(0, 0, w, h);
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
 </body>
 </html>
