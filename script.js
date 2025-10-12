@@ -91,7 +91,9 @@ if (canvas){
   let pointer = {x:0, y:0, active:false};
   let explodeUntil = 0;
   let lastTap = 0;
-  const IDLE_DELAY = 5000; // 5 seconds
+  // Always show company name on desktop + 5s delay on mobile
+let IDLE_DELAY =  1000;
+if (window.innerWidth > 980) IDLE_DELAY = 0; // desktop → immediately form name
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio || 1, 2);
