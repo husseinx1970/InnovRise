@@ -11,68 +11,129 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-
 </head>
 <body>
+  <!-- subtle animated background (already handled by script.js) -->
   <canvas id="bgGL" aria-hidden="true"></canvas>
   
-<header class="nav container">
-  <a class="logo" href="index.html" aria-label="InnovRise Home">
-    <img src="assets/logo.svg" alt="InnovRise logo" />
-    <span class="brandword">InnovRise</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="projects.html">Projects</a></li>
-    <li><a href="investors.html">Investors</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
-</header>
+  <!-- NAV -->
+  <header class="nav container">
+    <a class="logo" href="index.html" aria-label="InnovRise Home">
+      <img src="assets/logo.svg" alt="InnovRise logo" />
+      <span class="brandword">InnovRise</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="investors.html">Investors</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" aria-current="page">Contact</a></li>
+    </ul>
+  </header>
 
   <main class="container page">
     <h1 class="glow-target">Contact</h1>
     <p class="lead glow-target">If you value discipline and purposeful invention, we’d like to meet.</p>
-    <form class="contact-form card glass glow-target" action="mailto:contact@innovrise.com" method="post" enctype="text/plain">
+
+    <!-- CONTACT FORM (FormSubmit + AJAX, sends to innovrise@gmail.com) -->
+    <form id="contactForm"
+          class="contact-form card glass glow-target"
+          action="https://formsubmit.co/innovrise@gmail.com"
+          method="POST">
+      <!-- anti-spam (hidden) -->
+      <input type="text" name="_honey" style="display:none">
+      <!-- disable default captcha -->
+      <input type="hidden" name="_captcha" value="false">
+      <!-- email subject -->
+      <input type="hidden" name="_subject" value="New message from InnovRise website">
+      <!-- fallback success page (optional) -->
+      <input type="hidden" name="_next" value="https://husseinx1970.github.io/safespeed/thank-you.html">
+
       <label>Name
         <input type="text" name="name" placeholder="Your full name" required />
       </label>
+
       <label>Email
         <input type="email" name="email" placeholder="your@email.com" required />
       </label>
+
       <label>Message
         <textarea name="message" rows="6" placeholder="Tell us about your idea or request…" required></textarea>
       </label>
+
       <button class="btn-primary" type="submit">Send Message</button>
+
+      <!-- inline status message -->
+      <p id="formStatus" style="margin-top:10px; display:none;"></p>
     </form>
+
     <div class="contact-meta glow-target">
       <p><strong>Location:</strong> Karlstad, Sweden</p>
       <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">InnovRise</a></p>
     </div>
   </main>
   
-<footer class="footer">
-  <div class="container footer-grid">
-    <div class="brand">
-      <img src="assets/logo.svg" alt="InnovRise logo small" />
-      <div>
-        <strong>InnovRise</strong>
-        <p>Swedish Future Innovation</p>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="InnovRise logo small" />
+        <div>
+          <strong>InnovRise</strong>
+          <p>Swedish Future Innovation</p>
+        </div>
+      </div>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="investors.html">Investors</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
       </div>
     </div>
-    <div class="links">
-      <a href="index.html">Home</a>
-      <a href="projects.html">Projects</a>
-      <a href="investors.html">Investors</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </div>
-    <div class="socials">
-      <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
-  </div>
-  <div class="legal">© <span id="year"></span> InnovRise AB — Karlstad, Sweden</div>
-</footer>
+    <div class="legal">© <span id="year"></span> InnovRise AB — Karlstad, Sweden</div>
+  </footer>
 
+  <!-- Your main JS (particles/background/etc.) -->
   <script src="script.js"></script>
+
+  <!-- AJAX sender: keeps user on the same page -->
+  <script>
+    (function(){
+      const form = document.getElementById('contactForm');
+      const status = document.getElementById('formStatus');
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // stay on page
+        status.style.display = 'none';
+
+        const data = new FormData(form);
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: data
+          });
+          if (res.ok) {
+            form.reset();
+            status.textContent = 'Thank you — your message was sent.';
+            status.style.color = '#55ffe1';
+            status.style.display = 'block';
+          } else {
+            status.textContent = 'Something went wrong. Please try again.';
+            status.style.color = '#ff9c9c';
+            status.style.display = 'block';
+          }
+        } catch (err) {
+          status.textContent = 'Network error. Please try again.';
+          status.style.color = '#ff9c9c';
+          status.style.display = 'block';
+        }
+      });
+    })();
+  </script>
 </body>
-</html]
+</html>
