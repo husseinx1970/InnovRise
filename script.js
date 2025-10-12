@@ -153,7 +153,7 @@ if (window.innerWidth > 980) IDLE_DELAY = 0; // desktop → immediately form nam
 
   function draw(){
     const now = performance.now();
-    const idle = (!pointer.active && (now - lastInteraction) > IDLE_DELAY);
+   const idle = ((now - lastInteraction) > IDLE_DELAY);
     ctx.clearRect(0,0,W,H);
 
     // soft glow
