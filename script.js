@@ -1,4 +1,3 @@
-
 // Footer year
 document.addEventListener('DOMContentLoaded', () => {
   const y = document.getElementById('year');
@@ -97,12 +96,12 @@ if (canvas){
   let W, H, DPR;
   let lastInteraction = performance.now();
   const particles = [];
-  const N = 1000;
+  const N = 1200; // زيادة عدد الجسيمات لتحسين المظهر
   let targets = [];
   let pointer = {x:0, y:0, active:false};
   let explodeUntil = 0;
   let lastTap = 0;
-  const IDLE_DELAY = 5000; // 5 seconds
+  const IDLE_DELAY = 4000; // 4 seconds
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -117,37 +116,67 @@ if (canvas){
   resize();
 
   function rand(a,b){ return a + Math.random()*(b-a); }
+  
+  // تهيئة الجسيمات
   for(let i=0;i<N;i++){
-    particles.push({x:rand(0,W), y:rand(0,H), vx:rand(-0.6,0.6), vy:rand(-0.6,0.6), r:rand(1.4,2.6), t: -1});
+    particles.push({
+      x:rand(0,W), 
+      y:rand(0,H), 
+      vx:rand(-0.4,0.4), 
+      vy:rand(-0.4,0.4), 
+      r:rand(1.2,2.2), 
+      t: -1,
+      baseRadius: rand(1.2,2.2) // حفظ القطر الأساسي للجسيم
+    });
   }
 
   function buildTextTargets(){
     const off = document.createElement('canvas');
-    off.width = Math.floor(W); off.height = Math.floor(H);
+    off.width = Math.floor(W); 
+    off.height = Math.floor(H);
     const octx = off.getContext('2d');
     octx.clearRect(0,0,off.width,off.height);
     octx.fillStyle = '#fff';
     octx.textBaseline = 'middle';
-    const base = Math.min(W*0.86, H*0.44); // bigger width coverage
-    octx.font = `800 ${base}px "Space Grotesk", Inter, system-ui`;
-    const text = 'InnovRise';
-    const tw = octx.measureText(text).width;
-    const x = (W - tw)/2;
-    const y = H/2;
-    octx.fillText(text, x, y);
+    octx.textAlign = 'center';
+    
+    // حساب حجم الخط المناسب لضمان ظهور النص كاملاً
+    const maxWidth = W * 0.85; // استخدام 85% من العرض
+    const maxHeight = H * 0.4; // استخدام 40% من الارتفاع
+    
+    let fontSize = Math.min(maxWidth / 6, maxHeight); // حجم خط مبدئي
+    let textWidth;
+    
+    // ضبط حجم الخط ليناسب العرض
+    do {
+      fontSize -= 2;
+      octx.font = `800 ${fontSize}px "Space Grotesk", Inter, system-ui, sans-serif`;
+      textWidth = octx.measureText('InnovRise').width;
+    } while (textWidth > maxWidth && fontSize > 20);
+    
+    const x = W / 2;
+    const y = H / 2;
+    octx.fillText('InnovRise', x, y);
 
-    const step = Math.max(3, Math.floor(base/28));
+    // زيادة كثافة النقاط لتحسين المظهر
+    const step = Math.max(2, Math.floor(fontSize / 35));
     targets = [];
     const img = octx.getImageData(0,0,off.width,off.height).data;
+    
     for (let j=0;j<off.height;j+=step){
       for (let i=0;i<off.width;i+=step){
         const idx = (j*off.width + i)*4 + 3;
-        if (img[idx] > 0){
+        if (img[idx] > 128){ // عتبة أعلى لتحسين الوضوح
           targets.push({x:i, y:j});
         }
       }
     }
-    if (targets.length > particles.length) targets = targets.slice(0, particles.length);
+    
+    // إذا كان عدد النقاط أكبر من الجسيمات، نختار عينة عشوائية
+    if (targets.length > particles.length) {
+      const shuffled = targets.sort(() => 0.5 - Math.random());
+      targets = shuffled.slice(0, particles.length);
+    }
   }
 
   function draw(){
@@ -155,62 +184,112 @@ if (canvas){
     const idle = (!pointer.active && (now - lastInteraction) > IDLE_DELAY);
     ctx.clearRect(0,0,W,H);
 
-    const g = ctx.createRadialGradient(W/2,H/2,10,W/2,H/2,Math.max(W,H)/1.2);
-    g.addColorStop(0,'rgba(141,162,255,0.14)');
+    // خلفية متدرجة ناعمة
+    const g = ctx.createRadialGradient(W/2,H/2,10,W/2,H/2,Math.max(W,H)/1.5);
+    g.addColorStop(0,'rgba(141,162,255,0.18)');
+    g.addColorStop(0.7,'rgba(85,115,255,0.08)');
     g.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = g; 
+    ctx.fillRect(0,0,W,H);
 
+    // التحكم في سلوك الجسيمات
     if (idle && targets.length){
-      for (let i=0;i<targets.length;i++){ particles[i].t = i; }
+      // وضع الخمول: تشكيل اسم الشركة
+      for (let i=0;i<particles.length;i++){
+        if (i < targets.length){
+          particles[i].t = i;
+        } else {
+          particles[i].t = -1;
+        }
+      }
     } else {
+      // الوضع التفاعلي
       for (let p of particles) p.t = -1;
     }
 
+    // رسم وتحديث الجسيمات
     for (let i=0;i<particles.length;i++){
       const p = particles[i];
+      
       if (p.t >= 0 && explodeUntil < now){
+        // جذب الجسيم نحو موقعه في النص
         const T = targets[p.t];
         const dx = T.x - p.x, dy = T.y - p.y;
-        p.vx += dx * 0.012; p.vy += dy * 0.012;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        
+        if (dist > 2) {
+          p.vx += dx * 0.018; 
+          p.vy += dy * 0.018;
+        } else {
+          p.vx *= 0.85;
+          p.vy *= 0.85;
+        }
+        
+        // جعل الجسيمات في النص أكثر استقراراً
+        p.r = p.baseRadius * 1.2;
       } else {
+        p.r = p.baseRadius;
+        
         if (pointer.active){
+          // تفاعل مع مؤشر الماوس
           const dx = (pointer.x - p.x), dy = (pointer.y - p.y);
-          const dist2 = dx*dx + dy*dy + 60;
-          const f = 1700 / dist2;
+          const dist2 = dx*dx + dy*dy + 80;
+          const f = 1200 / dist2;
           p.vx += f * dx / Math.sqrt(dist2);
           p.vy += f * dy / Math.sqrt(dist2);
         } else {
+          // جذب نحو المركز
           const dx = (W/2 - p.x), dy = (H/2 - p.y);
-          p.vx += dx * 0.0006; p.vy += dy * 0.0006;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist > 50) {
+            p.vx += dx * 0.0008; 
+            p.vy += dy * 0.0008;
+          }
         }
       }
-      const damping = (p.t>=0) ? 0.90 : 0.985;
-      p.vx *= damping; p.vy *= damping;
-      p.x += p.vx; p.y += p.vy;
-      if (p.x<0||p.x>W) p.vx*=-1;
-      if (p.y<0||p.y>H) p.vy*=-1;
+      
+      // تطبيق الاحتكاك
+      const damping = (p.t>=0) ? 0.88 : 0.975;
+      p.vx *= damping; 
+      p.vy *= damping;
+      
+      // تحديث الموقع
+      p.x += p.vx; 
+      p.y += p.vy;
+      
+      // ارتداد من الحواف
+      if (p.x < 0) { p.x = 0; p.vx *= -0.6; }
+      if (p.x > W) { p.x = W; p.vx *= -0.6; }
+      if (p.y < 0) { p.y = 0; p.vy *= -0.6; }
+      if (p.y > H) { p.y = H; p.vy *= -0.6; }
 
+      // رسم الجسيم
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fillStyle = 'rgba(85,255,225,0.95)';
+      ctx.fillStyle = 'rgba(85,225,255,0.9)';
       ctx.fill();
     }
 
-    // linking
-    for (let i=0;i<particles.length; i+=6){
+    // رسم الروابط بين الجسيمات
+    ctx.strokeStyle = '#6d8cff';
+    for (let i=0;i<particles.length; i+=4){
       const p = particles[i];
-      for (let j=i+6;j<particles.length; j+=24){
+      for (let j=i+4;j<particles.length; j+=20){
         const q = particles[j];
         const dx = p.x - q.x, dy = p.y - q.y;
         const d2 = dx*dx + dy*dy;
-        if (d2 < 120*120){
-          ctx.globalAlpha = Math.max(0, 1 - d2/(120*120)) * 0.35;
-          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-          ctx.strokeStyle = '#8da2ff'; ctx.lineWidth = 1;
-          ctx.stroke(); ctx.globalAlpha=1;
+        if (d2 < 10000){ // 100px distance
+          ctx.globalAlpha = Math.max(0, 1 - d2/10000) * 0.3;
+          ctx.beginPath(); 
+          ctx.moveTo(p.x,p.y); 
+          ctx.lineTo(q.x,q.y);
+          ctx.lineWidth = 0.8;
+          ctx.stroke(); 
         }
       }
     }
+    ctx.globalAlpha = 1;
+    
     requestAnimationFrame(draw);
   }
   draw();
@@ -230,10 +309,10 @@ if (canvas){
 
   function explode(){
     const now = performance.now();
-    explodeUntil = now + 900;
+    explodeUntil = now + 800;
     for (const p of particles){
       const angle = Math.random()*Math.PI*2;
-      const speed = 4 + Math.random()*4;
+      const speed = 3 + Math.random()*5;
       p.vx += Math.cos(angle)*speed;
       p.vy += Math.sin(angle)*speed;
       p.t = -1;
@@ -241,23 +320,36 @@ if (canvas){
     lastInteraction = now;
   }
 
+  // أحداث الماوس (للكمبيوتر)
   canvas.addEventListener('mousemove', e => setPointer(e, true));
   canvas.addEventListener('mouseleave', e => setPointer(e, false));
   canvas.addEventListener('mousedown', e => setPointer(e, true));
   canvas.addEventListener('mouseup', e => setPointer(e, false));
   canvas.addEventListener('dblclick', e => explode());
+  
+  // أحداث اللمس (للموبايل)
   canvas.addEventListener('touchstart', e => {
     const now = Date.now();
     if (now - lastTap < 300) explode();
     lastTap = now;
     setPointer(e, true);
+    e.preventDefault();
   }, {passive:false});
-  canvas.addEventListener('touchmove', e => { setPointer(e, true); e.preventDefault(); }, {passive:false});
+  
+  canvas.addEventListener('touchmove', e => { 
+    setPointer(e, true); 
+    e.preventDefault(); 
+  }, {passive:false});
+  
   canvas.addEventListener('touchend', e => setPointer(e, false));
 }
 
 // Mobile menu: close when clicking backdrop or link
 const navToggle = document.getElementById('nav-toggle');
 const backdrop = document.querySelector('.backdrop');
-document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', ()=>{ if(navToggle) navToggle.checked=false; }));
-if (backdrop) backdrop.addEventListener('click', ()=>{ if(navToggle) navToggle.checked=false; });
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', ()=>{ 
+  if(navToggle) navToggle.checked=false; 
+}));
+if (backdrop) backdrop.addEventListener('click', ()=>{ 
+  if(navToggle) navToggle.checked=false; 
+});
