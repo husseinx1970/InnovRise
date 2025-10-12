@@ -19,18 +19,18 @@ if (bg) {
   })();
 }
 
-// ===== Interactive "InnovRise" particles (disturb nearby only) =====
+// ===== Orbit Particles Canvas =====
 const canvas = document.getElementById('playground');
 if (canvas){
   // ---------- Tunables ----------
-  const N_PARTICLES = 1100;     // number of particles
-  const DISTURB_DELAY = 2000;   // ms: time to return to word after last move
-  const INFLUENCE_SCALE = 0.22; // fraction of min(canvas) used as influence radius
-  const ATTRACT_K = 0.06;       // spring to text
-  const ATTRACT_POINTER = 0.08; // attraction to pointer (inside disturbance)
+  const N_PARTICLES = 1150;     // particle count
+  const ORBIT_PULL = 0.10;      // pull toward pointer while orbiting
+  const ORBIT_SPIN = 0.22;      // tangential (perpendicular) velocity for orbit
+  const ORBIT_RADIUS = 0.25;    // influence radius as fraction of min(canvas dimension)
+  const SPRING_TO_TEXT = 0.10;  // spring to text when reforming (higher = faster snap)
   const DAMPING = 0.86;         // velocity damping
-  const SCATTER = 0.6;          // random jitter magnitude during disturbance
-  const LINK_DIST = 130;        // link lines distance
+  const LINK_DIST = 130;        // max distance for drawing connecting lines
+  const EXPLODE_MS = 900;       // explosion duration
 
   const ctx = canvas.getContext('2d');
   let W, H, DPR;
@@ -38,11 +38,9 @@ if (canvas){
   let targets = [];
   let jitter = 0;
   let explodeUntil = 0;
-  const EXPLODE_MS = 900;
 
-  // Pointer + disturbance timer
+  // Pointer state
   const pointer = { x:0, y:0, inside:false, lastTap:0 };
-  let disturbUntil = 0;
 
   // Resize
   function resize(){
@@ -73,7 +71,6 @@ if (canvas){
     octx.fillStyle = '#fff';
     octx.textBaseline = 'middle';
 
-    // Fit text to box
     const text = 'InnovRise';
     let size = Math.min(W*0.9, H*0.55);
     const PAD = W*0.06;
@@ -117,22 +114,17 @@ if (canvas){
 
   // Events
   canvas.addEventListener('mouseenter', ()=>{ pointer.inside = true; });
-  canvas.addEventListener('mouseleave', ()=>{
-    pointer.inside = false;
-    disturbUntil = performance.now() + DISTURB_DELAY; // give it time to re-form
-  });
+  canvas.addEventListener('mouseleave', ()=>{ pointer.inside = false; /* instant reform on leave */ });
   canvas.addEventListener('mousemove', (e)=>{
     const r = canvas.getBoundingClientRect();
     pointer.x = e.clientX - r.left;
     pointer.y = e.clientY - r.top;
     pointer.inside = true;
-    disturbUntil = performance.now() + DISTURB_DELAY; // extend disturbance window
   });
   canvas.addEventListener('mousedown', (e)=>{
     const r = canvas.getBoundingClientRect();
     pointer.x = e.clientX - r.left;
     pointer.y = e.clientY - r.top;
-    disturbUntil = performance.now() + DISTURB_DELAY;
   });
   canvas.addEventListener('dblclick', ()=> explode());
 
@@ -147,7 +139,6 @@ if (canvas){
     if (now - pointer.lastTap < 300) explode();
     pointer.lastTap = now;
     pointer.inside = true;
-    disturbUntil = performance.now() + DISTURB_DELAY;
   }, {passive:false});
   canvas.addEventListener('touchmove', (e)=>{
     const r = canvas.getBoundingClientRect();
@@ -155,13 +146,9 @@ if (canvas){
       pointer.x = e.touches[0].clientX - r.left;
       pointer.y = e.touches[0].clientY - r.top;
     }
-    disturbUntil = performance.now() + DISTURB_DELAY;
     e.preventDefault();
   }, {passive:false});
-  canvas.addEventListener('touchend', ()=>{
-    pointer.inside = false;
-    disturbUntil = performance.now() + DISTURB_DELAY;
-  });
+  canvas.addEventListener('touchend', ()=>{ pointer.inside = false; });
 
   // Draw loop
   function draw(){
@@ -174,51 +161,49 @@ if (canvas){
     ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
 
     const now = performance.now();
-    const disturbActive = (now < disturbUntil) || (pointer.inside);
-
     jitter += 0.004;
-    const R = Math.min(W,H) * INFLUENCE_SCALE;
+    const R = Math.min(W,H) * ORBIT_RADIUS;
     const R2 = R*R;
 
     for (let i=0;i<particles.length;i++){
       const p = particles[i];
       const T = targets[p.t % targets.length];
 
-      if (disturbActive){
-        // If near pointer, attract + scatter; otherwise spring to text
+      if (pointer.inside){
+        // Distance to pointer
         const dxp = pointer.x - p.x;
         const dyp = pointer.y - p.y;
         const d2 = dxp*dxp + dyp*dyp;
 
         if (d2 < R2){
-          // attract with distance-based strength
+          // Pull toward pointer
           const dist = Math.sqrt(d2) + 0.0001;
-          const strength = ATTRACT_POINTER * (1 - dist/R);
-          p.vx += (dxp/dist) * strength * 14;
-          p.vy += (dyp/dist) * strength * 14;
-          // scatter (random) for sparkle
-          p.vx += (Math.random()-0.5) * SCATTER;
-          p.vy += (Math.random()-0.5) * SCATTER;
+          const px = dxp / dist, py = dyp / dist;
+          p.vx += px * ORBIT_PULL * 12;
+          p.vy += py * ORBIT_PULL * 12;
+
+          // Tangential (perpendicular) push for orbit
+          // Perp vector to (px,py) is (-py, px) or (py, -px)
+          p.vx += (-py) * ORBIT_SPIN * 8;
+          p.vy += ( px) * ORBIT_SPIN * 8;
         } else if (T){
+          // Mild spring to text when far from pointer
           const dx = (T.x + Math.sin(jitter + i*0.02)*0.8) - p.x;
           const dy = (T.y + Math.cos(jitter*1.3 + i*0.02)*0.8) - p.y;
-          p.vx += dx * ATTRACT_K; p.vy += dy * ATTRACT_K;
+          p.vx += dx * 0.04; p.vy += dy * 0.04;
         }
       } else {
-        // default: strong spring to the word
+        // Pointer not inside: immediate reform with strong spring
         if (T){
           const dx = (T.x + Math.sin(jitter + i*0.02)*0.8) - p.x;
           const dy = (T.y + Math.cos(jitter*1.3 + i*0.02)*0.8) - p.y;
-          p.vx += dx * ATTRACT_K; p.vy += dy * ATTRACT_K;
+          p.vx += dx * SPRING_TO_TEXT; p.vy += dy * SPRING_TO_TEXT;
         }
       }
 
-      // decay (if explosion active, let them be looser)
-      if (now < explodeUntil){
-        p.vx *= 0.9; p.vy *= 0.9;
-      } else {
-        p.vx *= DAMPING; p.vy *= DAMPING;
-      }
+      // Damping (looser during explosion)
+      if (now < explodeUntil){ p.vx *= 0.9; p.vy *= 0.9; }
+      else { p.vx *= DAMPING; p.vy *= DAMPING; }
 
       p.x += p.vx; p.y += p.vy;
 
@@ -229,7 +214,7 @@ if (canvas){
       ctx.fill();
     }
 
-    // linking
+    // connecting lines
     const L2 = LINK_DIST * LINK_DIST;
     for (let i=0;i<particles.length; i+=6){
       const p = particles[i];
