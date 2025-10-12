@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Investors — InnovRise</title>
+  <meta name="description" content="Investor overview: market, traction, plan, economics, and the raise." />
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark only">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+  <canvas id="bgGL" aria-hidden="true"></canvas>
+  <div id="bgFallback" class="bg" aria-hidden="true"><canvas id="grain"></canvas><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="gridlines"></div></div>
+  
+<header class="nav container">
+  <a class="logo" href="index.html" aria-label="InnovRise Home">
+    <img src="assets/logo.svg" alt="InnovRise logo" />
+    <span class="brandword">InnovRise</span>
+  </a>
+  <nav class="navwrap">
+    <input id="nav-toggle" type="checkbox" aria-label="Open menu"/>
+    <label for="nav-toggle" class="hamburger" aria-hidden="true" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+    <div class="backdrop"></div>
+    <ul class="nav-links">
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="investors.html">Investors</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="btn-primary magnetic" href="contact.html"><span>Contact</span></a></li>
+    </ul>
+  </nav>
+</header>
+
+  <main class="container page">
+    <h1 class="reveal">Investors</h1>
+    <p class="lead reveal">We build human-centered AI that reduces risk and creates value without trading off privacy.</p>
+
+    <section class="cards-3">
+      <div class="card glass reveal">
+        <h3>Market</h3>
+        <p><strong>TAM:</strong> global auto insurance (USD 800B+ premiums) & urban safety infrastructure (smart mobility, Vision Zero).</p>
+        <p><strong>Entry:</strong> fleets & taxi co-ops with high incident costs; expansion via insurer partnerships and city programs.</p>
+      </div>
+      <div class="card glass reveal">
+        <h3>Product</h3>
+        <ul>
+          <li><strong>SafeSpeed BlackBox:</strong> AI telematics with encrypted event evidence.</li>
+          <li><strong>NeuroWake:</strong> non-invasive fatigue prevention wearable.</li>
+          <li><strong>ArchiPrint AI 3D:</strong> architect-first ideation → print pipeline.</li>
+        </ul>
+      </div>
+      <div class="card glass reveal">
+        <h3>Moat</h3>
+        <p>Edge analytics + cryptographic attestation, domain datasets, privacy-by-design architecture, and partner integrations.</p>
+      </div>
+    </section>
+
+    <section class="cards-3">
+      <div class="card glass reveal">
+        <h3>Traction</h3>
+        <ul>
+          <li>On-road prototypes validated; OTA-ready firmware.</li>
+          <li>Active pilot pipeline with fleets/insurers (refs under NDA).</li>
+          <li>Municipal interest for Vision Zero pilots.</li>
+        </ul>
+      </div>
+      <div class="card glass reveal">
+        <h3>Plan (12 months)</h3>
+        <ol>
+          <li>Complete CE certification & finalize hardware.</li>
+          <li>Run 3 paid pilots, refine APIs/dashboards.</li>
+          <li>Scale to 1,000 units; launch EaaS billing.</li>
+        </ol>
+      </div>
+      <div class="card glass reveal">
+        <h3>Unit Economics (target)</h3>
+        <ul>
+          <li>Device GM &gt; 35% at 1k units.</li>
+          <li>Subscription: €12–€25/device/month depending on tier.</li>
+          <li>Payback &lt; 9 months on fleet deployments.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card glass reveal">
+      <h3>Round</h3>
+      <p>Seeking a pre-seed to complete certification, pilots, and manufacturing tooling. Use of funds: hardware tooling, safety certification, pilot ops, and channel development.</p>
+      <div class="cta">
+        <a class="btn-primary magnetic" href="contact.html"><span>Meet the team</span></a>
+        <a class="btn-ghost magnetic" href="projects.html"><span>Explore projects</span></a>
+      </div>
+    </section>
+  </main>
+  
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="InnovRise logo small" />
+      <div>
+        <strong>InnovRise</strong>
+        <p>Swedish Future Innovation</p>
+      </div>
+    </div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="investors.html">Investors</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="socials">
+      <a href="https://www.linkedin.com/in/innovrise-842961389/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <div class="legal">© <span id="year"></span> InnovRise AB — Karlstad, Sweden</div>
+</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
