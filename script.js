@@ -1,4 +1,4 @@
-// ===== Footer year =====
+// ===== Footer year (optional) =====
 document.addEventListener('DOMContentLoaded', () => {
   const y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
@@ -19,30 +19,30 @@ if (bg) {
   })();
 }
 
-// ===== Orbit Particles Canvas =====
+// ===== Orbit Particles (no connecting lines) =====
 const canvas = document.getElementById('playground');
 if (canvas){
   // ---------- Tunables ----------
-  const N_PARTICLES = 1150;     // particle count
-  const ORBIT_PULL = 0.10;      // pull toward pointer while orbiting
-  const ORBIT_SPIN = 0.22;      // tangential (perpendicular) velocity for orbit
-  const ORBIT_RADIUS = 0.25;    // influence radius as fraction of min(canvas dimension)
-  const SPRING_TO_TEXT = 0.10;  // spring to text when reforming (higher = faster snap)
-  const DAMPING = 0.86;         // velocity damping
-  const LINK_DIST = 130;        // max distance for drawing connecting lines
-  const EXPLODE_MS = 900;       // explosion duration
+  const N_PARTICLES = 1000;     // number of particles
+  const INFLUENCE_SCALE = 0.24; // fraction of min(canvas) used as influence radius
+  const SPRING_TO_TEXT = 0.065; // pull strength to target points
+  const ATTRACT_TO_POINTER = 0.10; // center pull to pointer
+  const ORBIT_TANGENTIAL = 0.12;   // tangential component for orbit
+  const DAMPING = 0.88;            // velocity damping
+  const JITTER = 0.003;            // micro jitter for "alive" feel
+  const EXPLODE_MS = 800;          // double-tap/dblclick explode duration
+  const PARTICLE_MIN = 1.2, PARTICLE_MAX = 2.2;
 
   const ctx = canvas.getContext('2d');
   let W, H, DPR;
   const particles = [];
   let targets = [];
-  let jitter = 0;
   let explodeUntil = 0;
 
   // Pointer state
   const pointer = { x:0, y:0, inside:false, lastTap:0 };
 
-  // Resize
+  // Resize & build targets
   function resize(){
     DPR = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
@@ -54,15 +54,16 @@ if (canvas){
   }
   addEventListener('resize', resize, {passive:true});
 
-  // Init
+  // Init particles
   function rand(a,b){ return a + Math.random()*(b-a); }
   function initParticles(){
     particles.length = 0;
     for(let i=0;i<N_PARTICLES;i++){
-      particles.push({x:rand(0,W), y:rand(0,H), vx:0, vy:0, r:rand(1.2,2.3), t:i});
+      particles.push({x:rand(0,W), y:rand(0,H), vx:0, vy:0, r:rand(PARTICLE_MIN,PARTICLE_MAX), t:i});
     }
   }
 
+  // Build "InnovRise" targets with fit-to-box
   function buildTextTargets(){
     const off = document.createElement('canvas');
     off.width = Math.floor(W); off.height = Math.floor(H);
@@ -92,10 +93,12 @@ if (canvas){
       for (let i=0;i<off.width;i+=step){
         const idx = (j*off.width + i)*4 + 3;
         if (img[idx] > 0){
+          // slight offset for life-like look
           targets.push({x:i + rand(-0.5,0.5), y:j + rand(-0.5,0.5)});
         }
       }
     }
+    // map particles to available targets
     for (let i=0;i<particles.length;i++){
       particles[i].t = i % targets.length;
     }
@@ -114,7 +117,7 @@ if (canvas){
 
   // Events
   canvas.addEventListener('mouseenter', ()=>{ pointer.inside = true; });
-  canvas.addEventListener('mouseleave', ()=>{ pointer.inside = false; /* instant reform on leave */ });
+  canvas.addEventListener('mouseleave', ()=>{ pointer.inside = false; });
   canvas.addEventListener('mousemove', (e)=>{
     const r = canvas.getBoundingClientRect();
     pointer.x = e.clientX - r.left;
@@ -161,8 +164,7 @@ if (canvas){
     ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
 
     const now = performance.now();
-    jitter += 0.004;
-    const R = Math.min(W,H) * ORBIT_RADIUS;
+    const R = Math.min(W,H) * INFLUENCE_SCALE;
     const R2 = R*R;
 
     for (let i=0;i<particles.length;i++){
@@ -170,40 +172,47 @@ if (canvas){
       const T = targets[p.t % targets.length];
 
       if (pointer.inside){
-        // Distance to pointer
+        // pointer attraction + tangential orbit
         const dxp = pointer.x - p.x;
         const dyp = pointer.y - p.y;
         const d2 = dxp*dxp + dyp*dyp;
+        const dist = Math.sqrt(d2) + 0.0001;
 
         if (d2 < R2){
-          // Pull toward pointer
-          const dist = Math.sqrt(d2) + 0.0001;
-          const px = dxp / dist, py = dyp / dist;
-          p.vx += px * ORBIT_PULL * 12;
-          p.vy += py * ORBIT_PULL * 12;
+          // radial pull
+          const pull = ATTRACT_TO_POINTER * (1 - dist/R);
+          p.vx += (dxp/dist) * pull * 14;
+          p.vy += (dyp/dist) * pull * 14;
 
-          // Tangential (perpendicular) push for orbit
-          // Perp vector to (px,py) is (-py, px) or (py, -px)
-          p.vx += (-py) * ORBIT_SPIN * 8;
-          p.vy += ( px) * ORBIT_SPIN * 8;
+          // tangential component for orbit
+          const tx = -dyp / dist;
+          const ty =  dxp / dist;
+          const orbit = ORBIT_TANGENTIAL * (1 - dist/R);
+          p.vx += tx * orbit * 12;
+          p.vy += ty * orbit * 12;
+
+          // micro jitter
+          p.vx += (Math.random()-0.5)*JITTER*40;
+          p.vy += (Math.random()-0.5)*JITTER*40;
         } else if (T){
-          // Mild spring to text when far from pointer
-          const dx = (T.x + Math.sin(jitter + i*0.02)*0.8) - p.x;
-          const dy = (T.y + Math.cos(jitter*1.3 + i*0.02)*0.8) - p.y;
-          p.vx += dx * 0.04; p.vy += dy * 0.04;
+          // outside influence: keep word
+          p.vx += (T.x - p.x) * SPRING_TO_TEXT;
+          p.vy += (T.y - p.y) * SPRING_TO_TEXT;
         }
       } else {
-        // Pointer not inside: immediate reform with strong spring
+        // immediately reform word
         if (T){
-          const dx = (T.x + Math.sin(jitter + i*0.02)*0.8) - p.x;
-          const dy = (T.y + Math.cos(jitter*1.3 + i*0.02)*0.8) - p.y;
-          p.vx += dx * SPRING_TO_TEXT; p.vy += dy * SPRING_TO_TEXT;
+          p.vx += (T.x - p.x) * SPRING_TO_TEXT;
+          p.vy += (T.y - p.y) * SPRING_TO_TEXT;
         }
       }
 
-      // Damping (looser during explosion)
-      if (now < explodeUntil){ p.vx *= 0.9; p.vy *= 0.9; }
-      else { p.vx *= DAMPING; p.vy *= DAMPING; }
+      // explosion decay
+      if (now < explodeUntil){
+        p.vx *= 0.9; p.vy *= 0.9;
+      } else {
+        p.vx *= DAMPING; p.vy *= DAMPING;
+      }
 
       p.x += p.vx; p.y += p.vy;
 
@@ -212,23 +221,6 @@ if (canvas){
       ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
       ctx.fillStyle = 'rgba(85,255,225,0.95)';
       ctx.fill();
-    }
-
-    // connecting lines
-    const L2 = LINK_DIST * LINK_DIST;
-    for (let i=0;i<particles.length; i+=6){
-      const p = particles[i];
-      for (let j=i+6;j<particles.length; j+=24){
-        const q = particles[j];
-        const dx = p.x - q.x, dy = p.y - q.y;
-        const d2 = dx*dx + dy*dy;
-        if (d2 < L2){
-          ctx.globalAlpha = Math.max(0, 1 - d2/L2) * 0.35;
-          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-          ctx.strokeStyle = '#8da2ff'; ctx.lineWidth = 1;
-          ctx.stroke(); ctx.globalAlpha=1;
-        }
-      }
     }
 
     requestAnimationFrame(draw);
