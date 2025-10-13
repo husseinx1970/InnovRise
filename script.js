@@ -29,7 +29,7 @@ if (canvas){
   const ATTRACT_TO_POINTER = 0.10; // center pull to pointer
   const ORBIT_TANGENTIAL = 0.12;   // tangential component for orbit
   const DAMPING = 0.88;            // velocity damping
-  const JITTER = 3;            // micro jitter for "alive" feel
+  const JITTER = 0.003;            // micro jitter for "alive" feel
   const EXPLODE_MS = 800;          // double-tap/dblclick explode duration
   const PARTICLE_MIN = 1.2, PARTICLE_MAX = 2.2;
 
