@@ -23,7 +23,7 @@ if (bg) {
 const canvas = document.getElementById('playground');
 if (canvas){
   // ---------- Tunables ----------
-  const N_PARTICLES = 8000;     // number of particles
+  const N_PARTICLES = 50;     // number of particles
   const INFLUENCE_SCALE = 0.24; // fraction of min(canvas) used as influence radius
   const SPRING_TO_TEXT = 0.065; // pull strength to target points
   const ATTRACT_TO_POINTER = 0.10; // center pull to pointer
